@@ -102,7 +102,7 @@ def plot_losses(losses_dict):
 
 # Define parameter sets
 params = {
-    "sequence_lengths": [20],
+    "sequence_lengths": [10],
     "hidden_sizes": [512 // 2],
     "num_layers": [3],
     "dropouts": [0.05],  # Reduced dropout
