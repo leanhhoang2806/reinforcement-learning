@@ -7,10 +7,14 @@ export PATH=$HOME/.local/bin:$PATH
 
 pip install torch tqdm numpy matplotlib
 
-scp -P 31707 /home/hoang/Documents/work/reinforcement-learning/exercise/train-lstm-for-xor.py ubuntu@doting-tarragon-spider.1.cricket.hyperbolic.xyz:~
+scp -P 31808 /home/hoang/Documents/work/reinforcement-learning/exercise/trains-lstm-debugger.py ubuntu@admired-peach-chipmunk.1.cricket.hyperbolic.xyz:~
 
 
 python train-lstm-for-xor.py
+
+
+
+scp -P 31808 ubuntu@admired-peach-chipmunk.1.cricket.hyperbolic.xyz:/home/ubuntu/loss_plot.png /home/hoang/Documents/work/reinforcement-learning/exercise/data/
 '''
 
 
@@ -33,7 +37,19 @@ Having more epoches some what solve this problem
 12. For LSTM model, the length of the input affect the depth of the model because there's more to memorized. 
 
 13. The issue of model underfitting and approaches:
-    1. 
+    1. When the model is underfitting. Result are usually worse than random guess. For example, in the case of binary classification. If the prediction is around 0.5. It means that the model does not learn anything. a random guess for all values to be 1 would be at 0.5 accuracy.
+    2. The first sign of model underfitting is that the loss function does not approach zeros. In the LSTM case here, it's eneded up at 0.7 error rate. On both test set and validation set.
+    3. When to loss function does not go to zeros, mean that the model does not converge. 
+    4. at this moment, there's many could be debug: Can the model learn ? Does data size is too big for the model ? Does the model need more complexity ? is learning rate too high / low that the model can't get into global minima ? Is there vanishing gradients / exploding gradients going on ? Does the length of the inputs too long compared to the complexity of the model ?
+    5. To answer those questions, there's must be a systematic approach.
+    6. This is the guidelines how to debug the problem :
+        1. Can the model learn ? => For the case of binary classification. Let's see if the implemented model can learn anything. Create another systhetic data set. For LSTM model, create a stream of numbers, and the classification to see if the sum of the stream is odd or even. trained the model with this data set and plot the loss function between the train set and validation set.
+        2. If the model could learn with odd/even classification, the model could learn
+        3. If the model does not learn, means that the model is still underfitting.
+        4. The next approach for LSTM model is to see if the sequence inputs was too long. For example, shorter inputs length could improve the prediction because the model is currently underfitting, so shorter inputs should help with the prediction. Do the same training, then plot the loss function again
+        5. In my case, I see an improvement when the model only a sequence of 10 numbers. hidden size at 128 helps. 
+        6. Now I know that my model can learn shorter inputs, the problem will be the longer inputs
+        7. longer inputs will need deeper models. For Neuralnetwork, deeper model is prone to gradient vanishing. Means that gradient is close to zeros for earlier layer. To detect such things, plot the change of gradients for each layer of neutrons. If the gradients close to zeros, means that there's no adjustment in the parameters. 
 
 
 ### Odd or even LSTM case

@@ -88,7 +88,7 @@ def train_model(model, x_train, y_train, x_val, y_val, epochs, batch_size, crite
     return loss_history, val_loss_history
 
 # Function to plot losses
-def plot_losses(losses_dict):
+def plot_losses(losses_dict, filename="loss_plot.png"):
     plt.figure(figsize=(10, 6))
     for seq_len, (train_loss, val_loss) in losses_dict.items():
         plt.plot(train_loss, label=f"Train Seq {seq_len}")
@@ -98,16 +98,17 @@ def plot_losses(losses_dict):
     plt.legend()
     plt.title("Training & Validation Loss Across Sequence Lengths")
     plt.grid()
-    plt.show()
+    plt.savefig(filename)  # Save the plot as a PNG file
+    plt.close()  # Close the figure to free memory
 
 # Define parameter sets
 params = {
-    "sequence_lengths": [10],
-    "hidden_sizes": [512 // 2],
-    "num_layers": [3],
+    "sequence_lengths": [30],
+    "hidden_sizes": [128],
+    "num_layers": [2],
     "dropouts": [0.05],  # Reduced dropout
     "epochs": 100,
-    "batch_size": 16,
+    "batch_size": 8,
     "clip_value": 5.0,
     "learning_rates": [0.001]
 }
@@ -117,7 +118,7 @@ total_iterations = sum(params["epochs"] * (1000 // params["batch_size"] + (1000 
 
 with tqdm(total=total_iterations, desc="Overall Training Progress", unit="batch") as pbar:
     for i, seq_len in enumerate(params["sequence_lengths"]):
-        print(f"Training model with sequence length {seq_len}")
+        print(f"Training model with sequence length {seq_len} \n")
         x_train, y_train = generate_odd_even_data(1000, seq_len)
         x_val, y_val = generate_odd_even_data(200, seq_len)
         model = LSTMModel(input_size=1, hidden_size=params["hidden_sizes"][i],
@@ -129,5 +130,8 @@ with tqdm(total=total_iterations, desc="Overall Training Progress", unit="batch"
                                            criterion=criterion, optimizer=optimizer, 
                                            clip_value=params["clip_value"], pbar=pbar)
         losses_dict[seq_len] = (train_loss, val_loss)
+
+        torch.cuda.empty_cache()
+        del model
 
 plot_losses(losses_dict)
