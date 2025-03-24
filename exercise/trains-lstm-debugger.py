@@ -103,7 +103,7 @@ def plot_losses(losses_dict, filename="loss_plot.png"):
 
 # Define parameter sets
 params = {
-    "sequence_lengths": [30],
+    "sequence_lengths": [50],
     "hidden_sizes": [128],
     "num_layers": [2],
     "dropouts": [0.05],  # Reduced dropout

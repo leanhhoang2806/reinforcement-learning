@@ -50,7 +50,8 @@ Having more epoches some what solve this problem
         5. In my case, I see an improvement when the model only a sequence of 10 numbers. hidden size at 128 helps. 
         6. Now I know that my model can learn shorter inputs, the problem will be the longer inputs
         7. longer inputs will need deeper models. For Neuralnetwork, deeper model is prone to gradient vanishing. Means that gradient is close to zeros for earlier layer. To detect such things, plot the change of gradients for each layer of neutrons. If the gradients close to zeros, means that there's no adjustment in the parameters. 
-
+        8. Most important parameters to looking into is dropouts and learning rates. Don't set drop out if model is not learning. Too much drop out will kill neurons. Learning rates is set to very slow like 0.001 and increase epoches to see if it's get there
+        9. To debugging local minima, you will see the loss function has some spike, the spike means that it's escape the local minima and going somewhere else. 
 
 ### Odd or even LSTM case
 Notes
